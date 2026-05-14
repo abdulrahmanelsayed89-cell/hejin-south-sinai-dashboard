@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داشبورد مهرجان شرم الشيخ الدولي للهجن 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#F5F0E8;min-height:100vh;direction:rtl}
+.db{padding:16px;max-width:1200px;margin:0 auto}
+.header{background:linear-gradient(135deg,#3D2B00,#8B6914);border-radius:12px;padding:20px 28px;margin-bottom:16px;color:#F5DFA0;display:flex;justify-content:space-between;align-items:center}
+.header h1{font-size:20px;font-weight:600;margin-bottom:6px}
+.header p{font-size:13px;color:#C4972A}
+.header-right{text-align:center}
+.header-right .big-num{font-size:42px;font-weight:700;color:#F5DFA0;line-height:1}
+.header-right .badge{background:#C4972A;color:#fff;font-size:12px;padding:4px 12px;border-radius:6px;display:inline-block;margin-top:4px}
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab{padding:10px 18px;border-radius:8px;border:1px solid #C4972A;background:#fff;color:#8B6914;font-size:13px;cursor:pointer;transition:.2s;font-family:Arial,sans-serif}
+.tab.active{background:#8B6914;color:#F5DFA0;border-color:#8B6914}
+.tab:hover:not(.active){background:#F5DFA0}
+.page{display:none}.page.active{display:block}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:#fff;border-radius:10px;border:1px solid #E8E0D0;padding:16px;text-align:center}
+.kpi .val{font-size:30px;font-weight:700;margin-bottom:4px}
+.kpi .lbl{font-size:12px;color:#666}
+.kpi.gold .val{color:#8B6914}
+.kpi.green .val{color:#1E8449}
+.kpi.teal .val{color:#1A5276}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.card{background:#fff;border-radius:10px;border:1px solid #E8E0D0;padding:18px;margin-bottom:12px}
+.card-title{font-size:13px;font-weight:600;color:#555;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #F0E8D8}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.bar-label{font-size:12px;color:#555;width:130px;text-align:right;flex-shrink:0}
+.bar-label.wide{width:170px}
+.bar-wrap{flex:1;background:#F0E8D8;border-radius:4px;height:22px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:11px;color:#fff;font-weight:700}
+.bar-fill.gold{background:#C4972A}
+.bar-fill.green{background:#1E8449}
+.bar-fill.teal{background:#1A5276}
+.bar-fill.red{background:#C0392B}
+.bar-fill.amber{background:#E67E22}
+.bar-val{font-size:12px;font-weight:600;color:#333;width:36px;flex-shrink:0}
+.legend-item{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:#555;margin:4px 8px 4px 0}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;display:inline-block}
+.tag{display:inline-block;padding:4px 10px;border-radius:5px;font-size:12px;margin:3px;font-weight:500}
+.tag.red{background:#FADBD8;color:#C0392B}
+.tag.amber{background:#FEF9E7;color:#7D6608}
+.tag.green{background:#EAFAF1;color:#1E8449}
+.alert{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:14px}
+.alert.info{background:#EBF5FB;color:#1A5276;border-right:4px solid #1A5276}
+.alert.warning{background:#FEF9E7;color:#7D6608;border-right:4px solid #C4972A}
+.tribe-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
+.tribe-card{background:#F5F0E8;border-radius:8px;padding:12px;text-align:center;border:1px solid #E8E0D0}
+.tribe-card .name{font-size:11px;color:#777;margin-bottom:4px}
+.tribe-card .count{font-size:18px;font-weight:700;color:#8B6914}
+.rec-item{display:flex;gap:12px;padding:12px;border-radius:8px;margin-bottom:8px;border:1px solid #E8E0D0;background:#fff}
+.rec-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.rec-icon.green{background:#EAFAF1}
+.rec-icon.red{background:#FADBD8}
+.rec-icon.amber{background:#FEF9E7}
+.rec-icon.teal{background:#EBF5FB}
+.rec-text .title{font-size:13px;font-weight:600;color:#333;margin-bottom:3px}
+.rec-text .sub{font-size:12px;color:#666}
+.section-header{font-size:15px;font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid}
+.section-header.green{color:#1E8449;border-color:#1E8449}
+.section-header.red{color:#C0392B;border-color:#C0392B}
+.section-header.teal{color:#1A5276;border-color:#1A5276}
+.quote-box{padding:12px 16px;background:#F5F0E8;border-radius:8px;margin-bottom:8px;font-size:13px;color:#444;font-style:italic;border-right:3px solid #C4972A}
+.stat-trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.stat-box{text-align:center;padding:14px;background:#F5F0E8;border-radius:8px}
+.stat-box .num{font-size:24px;font-weight:700;margin-bottom:4px}
+.stat-box .desc{font-size:11px;color:#666}
+.footer{text-align:center;padding:16px;font-size:11px;color:#999;margin-top:8px}
+@media(max-width:600px){
+  .grid2{grid-template-columns:1fr}
+  .grid3{grid-template-columns:1fr}
+  .stat-trio{grid-template-columns:1fr}
+  .header{flex-direction:column;gap:12px;text-align:center}
+  .bar-label{width:90px}
+  .bar-label.wide{width:110px}
+}
+</style>
+</head>
+<body>
+<div class="db">
+
+<div class="header">
+  <div>
+    <h1>مهرجان شرم الشيخ الدولي للهجن وقرية التراث</h1>
+    <p>المرصد الحضري — محافظة جنوب سيناء | مايو 2026</p>
+    <p style="margin-top:6px;font-size:12px;color:#F5DFA0">تحليل استبيانات رضا المشاركين</p>
+  </div>
+  <div class="header-right">
+    <div class="big-num">45</div>
+    <div class="badge">إجمالي المشاركين</div>
+  </div>
+</div>
+
+<div class="tabs" role="tablist">
+  <button class="tab active" onclick="showPage('overview',this)" role="tab">الصورة الإجمالية</button>
+  <button class="tab" onclick="showPage('visitors',this)" role="tab">الزوار العرب</button>
+  <button class="tab" onclick="showPage('foreign',this)" role="tab">السياح الأجانب</button>
+  <button class="tab" onclick="showPage('bedouin',this)" role="tab">أصحاب الهجن</button>
+  <button class="tab" onclick="showPage('village',this)" role="tab">قرية التراث</button>
+  <button class="tab" onclick="showPage('recs',this)" role="tab">التوصيات</button>
+</div>
+
+<!-- PAGE 1: OVERVIEW -->
+<div id="page-overview" class="page active">
+  <div class="kpi-grid">
+    <div class="kpi gold"><div class="val">45</div><div class="lbl">إجمالي المشاركين</div></div>
+    <div class="kpi green"><div class="val">100%</div><div class="lbl">نسبة التوصية</div></div>
+    <div class="kpi green"><div class="val">100%</div><div class="lbl">الشعور بالأمان</div></div>
+    <div class="kpi teal"><div class="val">53</div><div class="lbl">هجن مشاركة</div></div>
+    <div class="kpi teal"><div class="val">14</div><div class="lbl">قبيلة بدوية</div></div>
+    <div class="kpi gold"><div class="val">4.65</div><div class="lbl">تقييم الزوار / 5</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">توزيع المشاركين حسب الشريحة</div>
+      <div style="position:relative;height:220px"><canvas id="pieOverview"></canvas></div>
+      <div style="margin-top:10px">
+        <span class="legend-item"><span class="legend-dot" style="background:#C4972A"></span>زوار عرب (27)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#1A5276"></span>أصحاب هجن بدو (14)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#1E8449"></span>سياح أجانب (3)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#E67E22"></span>شركات سياحة (1)</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">تقييمات الخدمات — الزوار العرب (n=27)</div>
+      <div class="bar-row"><div class="bar-label">الأمان والتنظيم</div><div class="bar-wrap"><div class="bar-fill green" style="width:100%">100%</div></div></div>
+      <div class="bar-row"><div class="bar-label">المدرجات</div><div class="bar-wrap"><div class="bar-fill gold" style="width:78%">78%</div></div></div>
+      <div class="bar-row"><div class="bar-label">قرية التراث</div><div class="bar-wrap"><div class="bar-fill teal" style="width:81%">81%</div></div></div>
+      <div class="bar-row"><div class="bar-label">الحمامات</div><div class="bar-wrap"><div class="bar-fill amber" style="width:44%">44%</div></div></div>
+      <div class="bar-row"><div class="bar-label">الأطعمة</div><div class="bar-wrap"><div class="bar-fill red" style="width:38%">38%</div></div></div>
+      <p style="font-size:11px;color:#999;margin-top:8px">النسبة من المستخدمين الفعليين للخدمة</p>
+    </div>
+  </div>
+  <div class="stat-trio">
+    <div class="stat-box">
+      <div class="num" style="color:#1E8449">70%</div>
+      <div class="desc">أثر ثقافي كبير جداً على فهم تراث بدو سيناء</div>
+    </div>
+    <div class="stat-box">
+      <div class="num" style="color:#8B6914">100%</div>
+      <div class="desc">سيوصون بالتجربة لأصدقائهم وأسرهم</div>
+    </div>
+    <div class="stat-box">
+      <div class="num" style="color:#1A5276">5.0 / 5</div>
+      <div class="desc">تقييم بيئة العمل من السياح الأجانب</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 2: ARABIC VISITORS -->
+<div id="page-visitors" class="page">
+  <div class="alert info">27 زائر مصري وعربي — أكبر وأهم عينة في المهرجان</div>
+  <div class="kpi-grid">
+    <div class="kpi gold"><div class="val">27</div><div class="lbl">إجمالي الزوار</div></div>
+    <div class="kpi green"><div class="val">100%</div><div class="lbl">سيوصون بالتجربة</div></div>
+    <div class="kpi green"><div class="val">100%</div><div class="lbl">يشعرون بالأمان</div></div>
+    <div class="kpi teal"><div class="val">4.65</div><div class="lbl">تقييم البيئة / 5</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">توزيع الفئات العمرية</div>
+      <div style="position:relative;height:200px"><canvas id="pieAge"></canvas></div>
+      <div style="margin-top:8px">
+        <span class="legend-item"><span class="legend-dot" style="background:#C4972A"></span>18-30 (48%)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#1A5276"></span>46-60 (22%)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#1E8449"></span>31-45 (11%)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#7D6608"></span>+60 (7%)</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">هل هذه أول زيارة للمهرجان؟</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:30px;height:200px">
+        <div style="text-align:center">
+          <div style="font-size:48px;font-weight:700;color:#C0392B">59%</div>
+          <div style="font-size:13px;color:#555;margin-top:4px">نعم — أول زيارة</div>
+          <div style="font-size:12px;color:#999">(16 زائر)</div>
+        </div>
+        <div style="width:1px;height:80px;background:#E8E0D0"></div>
+        <div style="text-align:center">
+          <div style="font-size:48px;font-weight:700;color:#1E8449">33%</div>
+          <div style="font-size:13px;color:#555;margin-top:4px">لا — زار سابقاً</div>
+          <div style="font-size:12px;color:#999">(9 زوار)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">تقييم الخدمات التفصيلي (n=27)</div>
+    <div style="position:relative;height:240px"><canvas id="barServices"></canvas></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">المنتجات التراثية الأكثر جذباً</div>
+      <div class="bar-row"><div class="bar-label wide">منسوجات ومشغولات يدوية</div><div class="bar-wrap"><div class="bar-fill gold" style="width:44%">44%</div></div><div class="bar-val">12</div></div>
+      <div class="bar-row"><div class="bar-label wide">اكسسوارات وحلى تراثية</div><div class="bar-wrap"><div class="bar-fill teal" style="width:7%">7%</div></div><div class="bar-val">2</div></div>
+      <div class="bar-row"><div class="bar-label wide">فخار وخزف</div><div class="bar-wrap"><div class="bar-fill amber" style="width:4%">4%</div></div><div class="bar-val">1</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">الأثر الثقافي والتوصية</div>
+      <div class="bar-row"><div class="bar-label">أثر كبير جداً</div><div class="bar-wrap"><div class="bar-fill green" style="width:70%">70%</div></div><div class="bar-val">19</div></div>
+      <div class="bar-row"><div class="bar-label">أثر قليل</div><div class="bar-wrap"><div class="bar-fill amber" style="width:30%">30%</div></div><div class="bar-val">8</div></div>
+      <div class="bar-row"><div class="bar-label">سيوصون</div><div class="bar-wrap"><div class="bar-fill green" style="width:100%">100%</div></div><div class="bar-val">27</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3: FOREIGN TOURISTS -->
+<div id="page-foreign" class="page">
+  <div class="alert warning">عينة صغيرة — 3 سياح أجانب فقط. النتائج تشير لفرصة ضخمة غير مستغلة.</div>
+  <div class="kpi-grid">
+    <div class="kpi gold"><div class="val">3</div><div class="lbl">سياح أجانب</div></div>
+    <div class="kpi green"><div class="val">5.0/5</div><div class="lbl">تقييم البيئة</div></div>
+    <div class="kpi green"><div class="val">100%</div><div class="lbl">سيوصون</div></div>
+    <div class="kpi teal"><div class="val">100%</div><div class="lbl">مواصلات سهلة</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">الجنسيات</div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <div style="flex:1;text-align:center;padding:20px;background:#F5F0E8;border-radius:8px">
+          <div style="font-size:36px;font-weight:700;color:#8B6914">2</div>
+          <div style="font-size:13px;color:#555;margin-top:4px">أوكرانيا</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:20px;background:#F5F0E8;border-radius:8px">
+          <div style="font-size:36px;font-weight:700;color:#1A5276">1</div>
+          <div style="font-size:13px;color:#555;margin-top:4px">روسيا</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:#EBF5FB;border-radius:8px;font-size:12px;color:#1A5276;border-right:3px solid #1A5276">
+        <strong>فرصة استراتيجية:</strong> جميعهم للمرة الأولى — يمكن توسيع الجمهور الأوروبي بشكل كبير
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">تقييمات الخدمات</div>
+      <div class="bar-row"><div class="bar-label">بيئة العمل</div><div class="bar-wrap"><div class="bar-fill green" style="width:100%">5/5 ممتاز</div></div></div>
+      <div class="bar-row"><div class="bar-label">المواصلات</div><div class="bar-wrap"><div class="bar-fill green" style="width:100%">سهلة جداً</div></div></div>
+      <div class="bar-row"><div class="bar-label">الأمان</div><div class="bar-wrap"><div class="bar-fill green" style="width:100%">آمن جداً</div></div></div>
+      <div class="bar-row"><div class="bar-label">المدرجات</div><div class="bar-wrap"><div class="bar-fill gold" style="width:83%">83%</div></div></div>
+      <div class="bar-row"><div class="bar-label">قرية التراث</div><div class="bar-wrap"><div class="bar-fill teal" style="width:83%">83%</div></div></div>
+      <div class="bar-row"><div class="bar-label">الأطعمة</div><div class="bar-wrap"><div class="bar-fill red" style="width:33%">تحتاج تحسين</div></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">ماذا يقترح السياح الأجانب؟</div>
+    <div class="quote-box">"Make more same attraction" — المزيد من المناطق الجذابة المشابهة (سائحة أوكرانية)</div>
+    <div class="quote-box">"Everything is amazing" — كل شيء رائع، لا تغيير مطلوب (سائحة أوكرانية)</div>
+  </div>
+</div>
+
+<!-- PAGE 4: BEDOUIN -->
+<div id="page-bedouin" class="page">
+  <div class="kpi-grid">
+    <div class="kpi gold"><div class="val">14</div><div class="lbl">مشارك</div></div>
+    <div class="kpi teal"><div class="val">14</div><div class="lbl">قبيلة بدوية</div></div>
+    <div class="kpi gold"><div class="val">53</div><div class="lbl">هجن مشاركة</div></div>
+    <div class="kpi green"><div class="val">100%</div><div class="lbl">يشعرون بالأمان</div></div>
+    <div class="kpi teal"><div class="val">57%</div><div class="lbl">زاروا قرية التراث</div></div>
+    <div class="kpi green"><div class="val">100%</div><div class="lbl">التجربة إيجابية</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">القبائل المشاركة — 14 قبيلة من جنوب سيناء</div>
+    <div class="tribe-grid">
+      <div class="tribe-card"><div class="name">الترابين</div><div class="count">2</div></div>
+      <div class="tribe-card"><div class="name">المزينه</div><div class="count">2</div></div>
+      <div class="tribe-card"><div class="name">العليقات</div><div class="count">1</div></div>
+      <div class="tribe-card"><div class="name">الرياشات</div><div class="count">1</div></div>
+      <div class="tribe-card"><div class="name">الزينى</div><div class="count">1</div></div>
+      <div class="tribe-card"><div class="name">البلولى</div><div class="count">1</div></div>
+      <div class="tribe-card"><div class="name">الحويطات</div><div class="count">1</div></div>
+      <div class="tribe-card"><div class="name">ولاد سالم</div><div class="count">1</div></div>
+      <div class="tribe-card"><div class="name">ولاد سعيد</div><div class="count">1</div></div>
+      <div class="tribe-card"><div class="name">الحيوطات</div><div class="count">1</div></div>
+      <div class="tribe-card"><div class="name">مؤسس</div><div class="count">1</div></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">فئات السباق</div>
+      <div style="position:relative;height:180px"><canvas id="pieCats"></canvas></div>
+      <div style="margin-top:8px">
+        <span class="legend-item"><span class="legend-dot" style="background:#C4972A"></span>مفريد (86% — 12 هجن)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#1A5276"></span>ثنايا (14% — 2 هجن)</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">تجربة قرية التراث — منظور البدو</div>
+      <div class="bar-row"><div class="bar-label">زاروا القرية</div><div class="bar-wrap"><div class="bar-fill gold" style="width:57%">57%</div></div><div class="bar-val">8</div></div>
+      <div class="bar-row"><div class="bar-label">التنظيم ممتاز</div><div class="bar-wrap"><div class="bar-fill green" style="width:43%">43%</div></div><div class="bar-val">6</div></div>
+      <div class="bar-row"><div class="bar-label">التنظيم جيد جداً</div><div class="bar-wrap"><div class="bar-fill teal" style="width:43%">43%</div></div><div class="bar-val">6</div></div>
+      <div class="bar-row"><div class="bar-label">التجربة ممتازة</div><div class="bar-wrap"><div class="bar-fill green" style="width:43%">43%</div></div><div class="bar-val">6</div></div>
+      <div class="bar-row"><div class="bar-label">التجربة جيدة جداً</div><div class="bar-wrap"><div class="bar-fill teal" style="width:57%">57%</div></div><div class="bar-val">8</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">أبرز مقترحات أصحاب الهجن</div>
+    <div>
+      <span class="tag red">تنظيم سباقات شهرية منتظمة</span>
+      <span class="tag red">بث مباشر على قنوات عربية</span>
+      <span class="tag amber">ربط الهجن ببرامج السياحة</span>
+      <span class="tag amber">سوق للبدوي الأصيل</span>
+      <span class="tag amber">مرشد سياحي بالقرية</span>
+      <span class="tag green">انضمام لوزارة الشباب والرياضة</span>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 5: HERITAGE VILLAGE -->
+<div id="page-village" class="page">
+  <div class="card">
+    <div class="card-title">نسبة الرضا عن قرية التراث — مقارنة الشرائح</div>
+    <div style="position:relative;height:220px"><canvas id="barVillage"></canvas></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">آراء الأسعار — جميع الشرائح (n=41)</div>
+      <div class="bar-row"><div class="bar-label">مناسبة جداً</div><div class="bar-wrap"><div class="bar-fill green" style="width:85%">85%</div></div><div class="bar-val">35</div></div>
+      <div class="bar-row"><div class="bar-label">مرتفعة قليلاً</div><div class="bar-wrap"><div class="bar-fill amber" style="width:15%">15%</div></div><div class="bar-val">6</div></div>
+      <div class="bar-row"><div class="bar-label">مرتفعة جداً</div><div class="bar-wrap"><div class="bar-fill red" style="width:2%">2%</div></div><div class="bar-val">1</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">المنتجات الأكثر طلباً</div>
+      <div class="bar-row"><div class="bar-label">منسوجات يدوية</div><div class="bar-wrap"><div class="bar-fill gold" style="width:90%">الأول</div></div></div>
+      <div class="bar-row"><div class="bar-label">اكسسوارات تراثية</div><div class="bar-wrap"><div class="bar-fill teal" style="width:50%">الثاني</div></div></div>
+      <div class="bar-row"><div class="bar-label">فخار وخزف</div><div class="bar-wrap"><div class="bar-fill amber" style="width:25%">الثالث</div></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">المنتجات المقترح إضافتها — من كل الشرائح</div>
+    <div>
+      <span class="tag red">منتجات النخيل وورش العمل</span>
+      <span class="tag red">مرشد سياحي لشرح المنتجات</span>
+      <span class="tag red">تنوع أكبر في المشغولات</span>
+      <span class="tag amber">ملابس بدوية وعبايات تقليدية</span>
+      <span class="tag amber">أكلات شعبية ووجبات تقليدية</span>
+      <span class="tag amber">الخرج الرياشي رمز التراث</span>
+      <span class="tag green">منتجات الجمل (Camel products)</span>
+    </div>
+  </div>
+  <div style="padding:12px;background:#EBF5FB;border-radius:8px;font-size:13px;color:#1A5276;border-right:4px solid #1A5276">
+    <strong>رأي شركة السياحة:</strong> قرية التراث "إضافة قوية جداً" كمنتج سياحي جديد — ستُدرجها ضمن برامجها الثابتة مستقبلاً
+  </div>
+</div>
+
+<!-- PAGE 6: RECOMMENDATIONS -->
+<div id="page-recs" class="page">
+  <div class="section-header green">نقاط القوة — يجب الإبراز والبناء عليها</div>
+  <div class="rec-item">
+    <div class="rec-icon green"><span style="color:#1E8449;font-size:20px">✓</span></div>
+    <div class="rec-text">
+      <div class="title">الأمان الاستثنائي — 100% من جميع الشرائح</div>
+      <div class="sub">جميع المشاركين يشعرون بالأمان التام — أعلى مؤشر في الداشبورد بدون استثناء</div>
+    </div>
+  </div>
+  <div class="rec-item">
+    <div class="rec-icon green"><span style="color:#1E8449;font-size:20px">✓</span></div>
+    <div class="rec-text">
+      <div class="title">معدل توصية غير مسبوق — 100%</div>
+      <div class="sub">جميع المستجيبين من الزوار العرب والسياح الأجانب وشركات السياحة سيوصون بالتجربة</div>
+    </div>
+  </div>
+  <div class="rec-item">
+    <div class="rec-icon green"><span style="color:#1E8449;font-size:20px">✓</span></div>
+    <div class="rec-text">
+      <div class="title">قرية التراث — منتج سياحي جديد ناجح</div>
+      <div class="sub">شركة السياحة وصفتها بـ"إضافة قوية جداً" وستدرجها في برامجها الثابتة</div>
+    </div>
+  </div>
+  <div class="rec-item">
+    <div class="rec-icon green"><span style="color:#1E8449;font-size:20px">✓</span></div>
+    <div class="rec-text">
+      <div class="title">أثر ثقافي قوي — 70% من الزوار</div>
+      <div class="sub">المهرجان يُعزز الهوية الثقافية لبدو سيناء ويُقدمها للزوار بشكل فعّال</div>
+    </div>
+  </div>
+  <div class="rec-item">
+    <div class="rec-icon green"><span style="color:#1E8449;font-size:20px">✓</span></div>
+    <div class="rec-text">
+      <div class="title">تنوع القبائل المشاركة — 14 قبيلة</div>
+      <div class="sub">تمثيل شامل لقبائل محافظة جنوب سيناء يعكس وحدة المكوّن البدوي</div>
+    </div>
+  </div>
+
+  <div class="section-header red" style="margin-top:20px">مجالات تحتاج تحسيناً — أولويات الدورة القادمة</div>
+  <div class="rec-item">
+    <div class="rec-icon red"><span style="color:#C0392B;font-size:18px">!</span></div>
+    <div class="rec-text">
+      <div class="title">الأطعمة والمشروبات <span class="tag red" style="font-size:11px">أولوية عالية</span></div>
+      <div class="sub">14 من 27 لم يستخدموها — تنويع العروض، تشجيع الاستخدام، مراجعة الأسعار</div>
+    </div>
+  </div>
+  <div class="rec-item">
+    <div class="rec-icon red"><span style="color:#C0392B;font-size:18px">!</span></div>
+    <div class="rec-text">
+      <div class="title">الحمامات العامة <span class="tag red" style="font-size:11px">أولوية عالية</span></div>
+      <div class="sub">11 من 27 لم يستخدموها — زيادة عدد الوحدات وتحسين مستوى النظافة</div>
+    </div>
+  </div>
+  <div class="rec-item">
+    <div class="rec-icon red"><span style="color:#C0392B;font-size:18px">!</span></div>
+    <div class="rec-text">
+      <div class="title">التسويق والإعلام <span class="tag red" style="font-size:11px">أولوية عالية</span></div>
+      <div class="sub">مطلب متكرر من أصحاب الهجن — بث مباشر على قنوات عربية وحملة ترويجية دولية</div>
+    </div>
+  </div>
+  <div class="rec-item">
+    <div class="rec-icon" style="background:#FEF9E7"><span style="color:#7D6608;font-size:18px">~</span></div>
+    <div class="rec-text">
+      <div class="title">المواصلات للمضمار <span class="tag amber" style="font-size:11px">متوسط</span></div>
+      <div class="sub">بعض الزوار وجدوها متوسطة أو صعبة — باصات منظمة من مراكز المدن الرئيسية</div>
+    </div>
+  </div>
+  <div class="rec-item">
+    <div class="rec-icon" style="background:#FEF9E7"><span style="color:#7D6608;font-size:18px">~</span></div>
+    <div class="rec-text">
+      <div class="title">تنوع منتجات قرية التراث <span class="tag amber" style="font-size:11px">متوسط</span></div>
+      <div class="sub">إضافة منتجات النخيل والأكل الشعبي وتعيين مرشد سياحي لشرح المنتجات</div>
+    </div>
+  </div>
+
+  <div class="section-header teal" style="margin-top:20px">الفرص المستقبلية</div>
+  <div class="rec-item">
+    <div class="rec-icon teal"><span style="color:#1A5276;font-size:18px">→</span></div>
+    <div class="rec-text">
+      <div class="title">اجتذاب سياح أجانب أكثر</div>
+      <div class="sub">3 سياح فقط من أصل 45 — فرصة ضخمة مع أوروبا وروسيا وأسواق جديدة</div>
+    </div>
+  </div>
+  <div class="rec-item">
+    <div class="rec-icon teal"><span style="color:#1A5276;font-size:18px">→</span></div>
+    <div class="rec-text">
+      <div class="title">تواتر السباقات — ربع سنوي أو موسمي</div>
+      <div class="sub">الأعلى تكراراً في مقترحات أصحاب الهجن — سيزيد الأثر الاقتصادي والسياحي</div>
+    </div>
+  </div>
+  <div class="rec-item">
+    <div class="rec-icon teal"><span style="color:#1A5276;font-size:18px">→</span></div>
+    <div class="rec-text">
+      <div class="title">توأمة مع مهرجانات الهجن الخليجية</div>
+      <div class="sub">نادي الهجن بخليج العقبة مشارك — فرصة توأمة مع الإمارات والسعودية والأردن</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  المرصد الحضري لمحافظة جنوب سيناء — مايو 2026
+</div>
+
+</div>
+
+<script>
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+const GOLD='#C4972A', TEAL='#1A5276', GREEN='#1E8449', RED='#C0392B', AMBER='#E67E22', DARK='#3D2B00';
+
+new Chart(document.getElementById('pieOverview'), {
+  type: 'doughnut',
+  data: {
+    labels: ['زوار عرب', 'أصحاب هجن بدو', 'سياح أجانب', 'شركات سياحة'],
+    datasets: [{
+      data: [27, 14, 3, 1],
+      backgroundColor: [GOLD, TEAL, GREEN, AMBER],
+      borderWidth: 3, borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: d => `${d.label}: ${d.raw} مشارك` } }
+    }
+  }
+});
+
+new Chart(document.getElementById('pieAge'), {
+  type: 'doughnut',
+  data: {
+    labels: ['18-30', '46-60', '31-45', 'أكثر من 60'],
+    datasets: [{
+      data: [13, 6, 3, 2],
+      backgroundColor: [GOLD, TEAL, GREEN, '#7D6608'],
+      borderWidth: 3, borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } }
+  }
+});
+
+new Chart(document.getElementById('barServices'), {
+  type: 'bar',
+  data: {
+    labels: ['الأمان والتنظيم', 'المدرجات', 'قرية التراث', 'الحمامات', 'الأطعمة والمشروبات'],
+    datasets: [{
+      label: 'نسبة الرضا %',
+      data: [100, 78, 81, 44, 38],
+      backgroundColor: [GREEN, GOLD, TEAL, AMBER, RED],
+      borderRadius: 5
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+    scales: {
+      x: { max: 100, ticks: { callback: v => v + '%', color: '#666' }, grid: { color: '#F0E8D8' } },
+      y: { ticks: { color: '#555' }, grid: { display: false } }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: d => d.raw + '%' } }
+    }
+  }
+});
+
+new Chart(document.getElementById('pieCats'), {
+  type: 'doughnut',
+  data: {
+    labels: ['مفريد', 'ثنايا'],
+    datasets: [{
+      data: [12, 2],
+      backgroundColor: [GOLD, TEAL],
+      borderWidth: 3, borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } }
+  }
+});
+
+new Chart(document.getElementById('barVillage'), {
+  type: 'bar',
+  data: {
+    labels: ['سياح أجانب', 'زوار عرب', 'أصحاب هجن', 'شركات سياحة'],
+    datasets: [{
+      label: 'نسبة الرضا الإيجابي %',
+      data: [100, 81, 100, 100],
+      backgroundColor: [GREEN, GOLD, TEAL, AMBER],
+      borderRadius: 5
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: {
+      y: { max: 100, ticks: { callback: v => v + '%', color: '#666' }, grid: { color: '#F0E8D8' } },
+      x: { ticks: { color: '#555' }, grid: { display: false } }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: d => d.raw + '%' } }
+    }
+  }
+});
+</script>
+</body>
+</html>
